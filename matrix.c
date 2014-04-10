@@ -45,6 +45,39 @@ matrix_alloc_fail:
 	return NULL;
 }
 
+void enter_matrix(matrix_t *matrip)
+{
+	int i,j;
+	
+	if (!matrip) {
+		ELOG("Matrix null pointer.\n");
+		return STAT_ERROR;
+	}
+	for (i=0; i<matrip->row; i++) {
+		for (j=0; j<matrip->col; j++) {
+			scanf("%lf", &matrip->table[i][j]);
+		}
+	}
+	return STAT_OK;
+}
+
+void print_matrix(const matrix_t *matrip)
+{
+	int i,j;
+	
+	if (!matrip) {
+		ELOG("Matrix null pointer.\n");
+		return STAT_ERROR;
+	}
+	for (i=0; i<matrip->row; i++) {
+		for (j=0; j<matrip->col; j++) {
+			printf("%lf ", matrip->table[i][j]);
+		}
+		printf("\n");
+	}
+	return STAT_OK;
+}
+
 int set_matrix_pos_value(matrix_t *matrix, int row, int col, 
 							const double val)
 {

@@ -24,5 +24,6 @@ int get_matrix_pos_value(matrix_t *matrixp, int row, int col,
  * instead.
  */
 double get_matrix_pos_value_ret(matrix_t *matrix, int row, int col);
-
+void enter_matrix(matrix_t *matrip);
+void print_matrix(const matrix_t *matrip);
 #endif

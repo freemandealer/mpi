@@ -21,17 +21,13 @@ int main(int argc, char *argv[])
 	matrip1 = init_matrix(m_row, m_col);
 	matrip2 = init_matrix(m_row, m_col);
 	printf("Enter the matrix1:\n");
-	for (i=0; i<m_row; i++) {
-		for (j=0; j<m_col; j++)
-		scanf("%d", &matrip1[i][j]);
-	}
-	printf("Enter the matrix1:\n");
-	for (i=0; i<m_row; i++) {
-		for (j=0; j<m_col; j++)
-		scanf("%d", &matrip1[i][j]);
-	}
-	
-	set_matrix_pos_value(matrixp, 2, 1, 3);
+	enter_matrix(m_matrip1);
+	printf("Enter the matrix2:\n");
+	enter_matrix(m_matrip2);
+	printf("So now matrix1 is:\n");
+	print_matrix(m_matrip1);
+	printf("and matrix2 is:\n");
+	print_matrix(m_matrip2);
 	
 	MPI_Init(&argc, &argv);
 	MPI_Comm_size(MPI_COMM_WORLD, &size);
