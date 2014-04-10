@@ -51,14 +51,13 @@ void enter_matrix(matrix_t *matrip)
 	
 	if (!matrip) {
 		ELOG("Matrix null pointer.\n");
-		return STAT_ERROR;
+		return;
 	}
 	for (i=0; i<matrip->row; i++) {
 		for (j=0; j<matrip->col; j++) {
 			scanf("%lf", &matrip->table[i][j]);
 		}
 	}
-	return STAT_OK;
 }
 
 void print_matrix(const matrix_t *matrip)
@@ -67,7 +66,7 @@ void print_matrix(const matrix_t *matrip)
 	
 	if (!matrip) {
 		ELOG("Matrix null pointer.\n");
-		return STAT_ERROR;
+		return;
 	}
 	for (i=0; i<matrip->row; i++) {
 		for (j=0; j<matrip->col; j++) {
@@ -75,7 +74,6 @@ void print_matrix(const matrix_t *matrip)
 		}
 		printf("\n");
 	}
-	return STAT_OK;
 }
 
 int set_matrix_pos_value(matrix_t *matrix, int row, int col, 
