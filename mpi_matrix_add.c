@@ -11,15 +11,15 @@ int main(int argc, char *argv[])
 	int size;
 	char buf[2048];
 	MPI_Status status;
-	matrix_t* m_matrip1, m_matrip2;
+	matrix_t *m_matrip1, *m_matrip2;
 	int m_row, m_col;  // tow matrixes share the same size
 	int i,j;
 
 	/* Create matrixes */
 	printf("How many rows:\n"); scanf("%d", &m_row);
 	printf("How many columns:\n"); scanf("%d", &m_col);
-	matrip1 = init_matrix(m_row, m_col);
-	matrip2 = init_matrix(m_row, m_col);
+	m_matrip1 = init_matrix(m_row, m_col);
+	m_matrip2 = init_matrix(m_row, m_col);
 	printf("Enter the matrix1:\n");
 	enter_matrix(m_matrip1);
 	printf("Enter the matrix2:\n");
