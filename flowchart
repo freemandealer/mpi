@@ -1,0 +1,11 @@
+/* 
+1. 根据CPU数目分割矩阵
+得到矩阵m_matrix1, m_matrix2, m_row1=m_row2, m_col1=m_col2
+划分成 ceil(m_row/process)个子矩阵sub_matrix1和sub_matrix2，每个矩阵sub_row1 = sub_row2, sub_col1=sub_col2=m_col1
+发送以上数据到各个进程
+2. 每个CPU对各个子矩阵进行操作
+重新组织收到的数据
+r_sub_matrix[i][j] = sub_matrix1[i][j] + sub_matrix2[i][j]
+发送结果到主进程(或者考虑同步，直接修改结构?)
+*/
+
