@@ -27,8 +27,8 @@ matrix_t* init_matrix(int rownum, int colnum)
 		if (!matrix->table[i])
 			goto matrix_row_alloc_fail;
 	}
-	DLOG("Matrix alloc successful:\n matrix_t addr:%p\n matrix.table addr:%p\n",
-			matrix,matrix->table);
+	DLOG("Matrix alloc successful:\n matrix_t addr:%p\n table addr:%p\n",
+		matrix,matrix->table);
 	return matrix;
 	
 matrix_row_alloc_fail:
@@ -108,7 +108,7 @@ int get_matrix_pos_value(matrix_t *matrix, int row, int col,
 
 /* 
  * It the return-version of get_matrix_pos_val(). But be careful when
- * you use this function coz it won't tall you whether your access is 
+ * you use this function coz it won't tell you whether your access is 
  * out of boundary. If you're not sure, please use get_matrix_pos_val()
  * instead.
  */
