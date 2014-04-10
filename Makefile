@@ -1,11 +1,9 @@
 HEADERS = matrix.h stat.h log.h
-CC = gcc
+CC = mpicc
 
 #Set LOG_ON=1 if logs are wanted, or clear it with 0
 CFLAGS += -D LOG_ON=0
 
-run: mpi_matrix_add
-	./mpi_matrix_add
 	
 mpi_matrix_add: mpi_matrix_add.o matrix.o $(HEADERS)
 	$(CC) mpi_matrix_add.o matrix.o -o mpi_matrix_add
@@ -21,9 +19,7 @@ matrix_test.o: matrix.o $(HEADERS)
 	
 matrix_test: matrix.o matrix_test.o $(HEADERS)
 	$(CC) matrix_test.o matrix.o -o matrix_test
-
-test: matrix_test
-	./matrix_test 	
+ 	
 	
 clean:
 	rm *.o matrix_test mpi_matrix_add
