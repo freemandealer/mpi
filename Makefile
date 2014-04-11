@@ -17,12 +17,18 @@ mpi_matrix_add.o: mpi_matrix_add.c $(HEADERS)
 matrix.o: matrix.h matrix.c $(HEADERS)
 	$(CC) $(CFLAGS) -c matrix.c -o matrix.o
 
-matrix_test.o: matrix.o $(HEADERS)
+matrix_test.o: matrix_test.o matrix.o $(HEADERS)
 	$(CC) $(CFLAGS) -c matrix_test.c -o matrix_test.o
+	
+matrix_file_test.o: matrix_file_test.c matrix.o $(HEADERS)
+	$(CC) $(CFLAGS) -c matrix_file_test.c -o matrix_file_test.o
+
+matrix_file_test: matrix_file_test.o matrix.o $(HEADERS)
+	$(CC) matrix_file_test.o matrix.o -o matrix_file_test
 	
  	
 	
 clean:
-	rm *.o matrix_test mpi_matrix_add
+	rm *.o matrix_test mpi_matrix_add matrix_file_test
 	
 	

@@ -45,6 +45,33 @@ matrix_alloc_fail:
 	return NULL;
 }
 
+matrix_t* matrix_from_file(char *path)
+{
+	FILE *filp;
+	int row_num, col_num;
+	matrix_t *matrip;
+	int i,j;
+	
+	filp = fopen(path, "r");
+	if (!filp) {
+		ELOG("Failed to open data file.\n");
+		return NULL;
+	}
+	fscanf(filp, "%d %d", &row_num, &col_num);
+	matrip = init_matrix(row_num, col_num);
+	if (!matrip) {
+		ELOG("Can't create matrix from date file.\n");
+		return NULL;
+	}
+	for (i=0; i<matrip->row; i++) {
+		for (j=0; j<matrip->col; j++) {
+			fscanf(filp,"%lf", &matrip->table[i][j]);
+		}
+	}
+	DLOG("Matrix is created from data file.\n");
+	return matrip;
+}
+
 void enter_matrix(matrix_t *matrip)
 {
 	int i,j;
@@ -71,7 +98,7 @@ void print_matrix(const matrix_t *matrip)
 	}
 	for (i=0; i<matrip->row; i++) {
 		for (j=0; j<matrip->col; j++) {
-			printf("%lf ", matrip->table[i][j]); DLOG("OK");
+			printf("%lf ", matrip->table[i][j]);
 		}
 		printf("\n");
 	}
