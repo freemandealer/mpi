@@ -22,14 +22,15 @@ int main(int argc, char *argv[])
 	double *sub_array1, *sub_array2, *result_array;
 	int m_row, m_col;  // tow matrixes share the same size
 	int i,j;
-
+	
 	/* Create matrixes */
 	printf("How many rows:\n"); scanf("%d", &m_row);
 	printf("How many columns:\n"); scanf("%d", &m_col);
 	m_matrip1 = init_matrix(m_row, m_col);
 	m_matrip2 = init_matrix(m_row, m_col);
 	result_matrip = init_matrix(m_row, m_col);
-	if (m_matrip1 == NULL || m_matrip2 == NULL || result_matrip == NULL) {
+	if (m_matrip1 == NULL || m_matrip2 == NULL ||
+			result_matrip == NULL) {
 		printf("Memory alloc error! Exiting ...\n");
 		return -1;
 	}
@@ -37,16 +38,14 @@ int main(int argc, char *argv[])
 	enter_matrix(m_matrip1);
 	printf("Enter the matrix2:\n");
 	enter_matrix(m_matrip2);
-	printf("Now matrix1 is:\n");
-	print_matrix(m_matrip1);
-	printf("and matrix2 is:\n");
-	print_matrix(m_matrip2);
+
 	
 	MPI_Init(&argc, &argv);
 	MPI_Comm_size(MPI_COMM_WORLD, &size);
 	MPI_Comm_rank(MPI_COMM_WORLD, &myid);
-	
+	DLOG("MPI Init complete.\n");
 	if (myid == 0) {
+		DLOG("Process %d is running.\n",myid);
 		/* Dispatch matrixes */
 		for (row_id=0; row_id<m_row; row_id++) {
 			
@@ -58,12 +57,12 @@ int main(int argc, char *argv[])
 		 	 * different message TAGs to identify the tow matrixes.
 		 	 */
 			pid = row_id%size;
-			memcpy(buf, m_matrix1->table[row_id], m_col*sizeof(double));
+			memcpy(buf, m_matrip1->table[row_id], m_col*sizeof(double));
 			buf[m_col] = (double)row_id;
 			/* Add 1 to length coz we append row id at the tail*/
 			MPI_Send(buf, m_col+1, MPI_DOUBLE, pid, TAG_MATRIX1,
 						 MPI_COMM_WORLD);       
-			memcpy(buf, m_matrix2->table[row_id], m_col*sizeof(double));
+			memcpy(buf, m_matrip2->table[row_id], m_col*sizeof(double));
 			buf[m_col] = (double)row_id;
 			MPI_Send(buf, m_col+1, MPI_DOUBLE, pid, TAG_MATRIX2,
 						 MPI_COMM_WORLD);
@@ -74,21 +73,27 @@ int main(int argc, char *argv[])
 			}
 		}
 		/* Receive results */
-		MPI_Recv(buf, m_col+1, MPI_DOUBLE, 0/*FIXME*/, TAG_RESULT, MPI_COMM_WORLD); 
+		for (i=0; i<m_row; i++) {
+		MPI_Recv(buf, m_col+1, MPI_DOUBLE, MPI_ANY_SOURCE,
+					TAG_RESULT,MPI_COMM_WORLD, &status); 
 		memcpy(result_matrip->table[(int)buf[m_col]], buf, 
 				m_col*sizeof(double));
+		}
 		/* Done, print the result!*/ //TODO
-		print_matrix(result_matrip)
+		print_matrix(result_matrip);
 		
 	} else {
-		MPI_Recv(buf, m_col+1, MPI_DOUBLE, 0, TAG_MATRIX1, MPI_COMM_WORLD);
+		DLOG("Process %d is running.\n",myid);
+		MPI_Recv(buf, m_col+1, MPI_DOUBLE, 0, TAG_MATRIX1,
+					MPI_COMM_WORLD, &status);
 		row_id = (int)buf[m_col]; 			// Get row id
 		DLOG("Recved row id:%d\n",row_id);
 		memcpy(sub_array1, buf,m_col*sizeof(double));
-		MPI_Recv(buf, m_col+1, MPI_DOUBLE, 0, TAG_MATRIX1, MPI_COMM_WORLD);
+		MPI_Recv(buf, m_col+1, MPI_DOUBLE, 0, TAG_MATRIX1,
+					MPI_COMM_WORLD, &status);
 		
-		/* Compare row id. I'm not sure whether the two sub-matrixex share 
-		 * the same row id(same line)
+		/* Compare row id. I'm not sure whether the two 
+		 * sub-matrixex share the same row id(same line)
 		 */
 		if (row_id != (int)buf[m_col]) {
 			ELOG("Row ids are not same.\n");

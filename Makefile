@@ -2,7 +2,7 @@ HEADERS = matrix.h stat.h log.h
 CC = mpicc
 
 #Set LOG_ON=1 if logs are wanted, or clear it with 0
-CFLAGS += -D LOG_ON=0
+CFLAGS += -D LOG_ON=1
 
 	
 mpi_matrix_add: mpi_matrix_add.o matrix.o $(HEADERS)

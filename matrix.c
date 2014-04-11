@@ -58,6 +58,7 @@ void enter_matrix(matrix_t *matrip)
 			scanf("%lf", &matrip->table[i][j]);
 		}
 	}
+	DLOG("enter_matrix exit normally.\n");
 }
 
 void print_matrix(const matrix_t *matrip)
@@ -70,10 +71,11 @@ void print_matrix(const matrix_t *matrip)
 	}
 	for (i=0; i<matrip->row; i++) {
 		for (j=0; j<matrip->col; j++) {
-			printf("%lf ", matrip->table[i][j]);
+			printf("%lf ", matrip->table[i][j]); DLOG("OK");
 		}
 		printf("\n");
 	}
+	DLOG("print_matrix exit normally.\n");
 }
 
 int set_matrix_pos_value(matrix_t *matrix, int row, int col, 
