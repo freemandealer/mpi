@@ -1,13 +1,14 @@
 #!/bin/bash
 #PBS -S /bin/bash
-#PBS -N mpi_matrix_add 
+#PBS -N mpi_matrix_add
 #PBS -P P002016011
-#PBS -q Regular
+#PBS -q Premium
 #PBS -l nodes=2:ppn=3
 #PBS -l jobtype=parallel
-#PBS -l walltime=12:00:00
+#PBS -l walltime=1:00:00
 #PBS -o mpi_matrix_add.out
 #PBS -e mpi_matrix_add.err
-
+date
 cd /nuist/u/home/jiedu/freeman/matrix_add
 mpiexec -n 6 ./mpi_matrix_add
+date

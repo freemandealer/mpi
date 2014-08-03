@@ -69,6 +69,7 @@ matrix_t* matrix_from_file(char *path)
 		}
 	}
 	DLOG("Matrix is created from data file.\n");
+	fclose(filp);
 	return matrip;
 }
 

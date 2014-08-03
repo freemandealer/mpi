@@ -7,5 +7,6 @@
 							 printf(param);}
 #define ELOG(param...) if(LOG_ON) {printf("LOG(error):"); \
 							 printf(param);}
+		 
 #endif
 

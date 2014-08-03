@@ -25,7 +25,8 @@ matrix_file_test.o: matrix_file_test.c matrix.o $(HEADERS)
 
 matrix_file_test: matrix_file_test.o matrix.o $(HEADERS)
 	$(CC) matrix_file_test.o matrix.o -o matrix_file_test
-	
+cleanlog: 
+	rm log*.txt	
  	
 	
 clean:
