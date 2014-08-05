@@ -7,6 +7,7 @@
 #define TAG_MATRIX1 99
 #define TAG_MATRIX2 98
 #define TAG_RESULT  97
+#define TAG_LOOP	96
 							 
 inline void dlog(int pro_num, char *msg)
 {
@@ -38,7 +39,8 @@ int main(int argc, char *argv[])
 	int m_row, m_col;
 	int i,j;
 	char log_buf[80];
-	
+	int *times; /*times each process will receive */
+	int loop;
 
 
 	MPI_Init(&argc, &argv);
@@ -59,7 +61,6 @@ int main(int argc, char *argv[])
 			printf("Two matrixs differ in size.\n");
 			return -1;	
 		}
-			
 		m_row = m_matrip1->row;
 		m_col = m_matrip1->col;
 		result_matrip = init_matrix(m_row, m_col);
@@ -72,7 +73,19 @@ int main(int argc, char *argv[])
 		print_matrix(m_matrip1);
 		printf("-----Matrix 2-----\n");
 		print_matrix(m_matrip2);
-		
+		/* Sending some params to other processes before going off */
+		MPI_Bcast(&m_col, 1, MPI_INT, 0,  MPI_COMM_WORLD);
+		times = (int *)malloc(size * sizeof(int));
+		for (i=0; i<size; i++ ) {
+			times[i] = m_col/(size-1);
+		}
+		for (i=1; i<=m_col%(size-1); i++ ) {
+			times[i] ++;
+		}
+		for (pid=1; pid<size; pid++) {
+			MPI_Send(&times[pid], 1, MPI_INT, pid, TAG_LOOP,
+						 MPI_COMM_WORLD);
+		}
 		/* Dispatch matrixes */
 		for (row_id=0; row_id<m_row; row_id++) {
 			
@@ -84,9 +97,9 @@ int main(int argc, char *argv[])
 		 	 * buffer so the node can tell which row it is. We use 
 		 	 * different message TAGs to identify the two matrixes.
 		 	 */
-		 	 
-			pid = row_id % (size-1);	// For process 0 isn't involved  
-			pid ++;					
+		 	
+			pid = row_id % (size-1);	// For process 0 isn't involved
+			pid ++;
 			memcpy(buf, m_matrip1->table[row_id], m_col*sizeof(double));
 			/* Add 1 to length coz we append row_id at the tail*/
 			buf[m_col] = (double)row_id;
@@ -127,7 +140,10 @@ int main(int argc, char *argv[])
 		 * order?
 		 */
 		dlog(myid,"********\n");
-		m_col = 4;  // FIXME Let the value be signed automatically
+		MPI_Bcast(&m_col, 1, MPI_INT, 0,  MPI_COMM_WORLD);
+		MPI_Recv(&loop, 1, MPI_INT, 0, TAG_LOOP,
+						 MPI_COMM_WORLD, &status);
+		while(loop --) {
 		MPI_Recv(buf, m_col+1, MPI_DOUBLE, 0, TAG_MATRIX1,
 					MPI_COMM_WORLD, &status);
 		row_id = (int)buf[m_col]; 			// Get row id
@@ -158,6 +174,7 @@ int main(int argc, char *argv[])
 		/* Send the result back to main node */
 		MPI_Send(result_array, m_col+1, MPI_DOUBLE, 0, TAG_RESULT,
 						 MPI_COMM_WORLD);
+		}
 		dlog(myid,"########\n");
 	}
 	/* FIXME: release resources */
